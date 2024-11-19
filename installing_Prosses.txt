@@ -12,6 +12,17 @@
 
 9 . ts to js converting comment customize 
            - "scripts": {
-                      "build" : "tsc",
-                        },          
+              "build" : "tsc",
+              },   
 
+10 . npm start -> 
+           - "scripts": {
+              "start": "nodemon ./dist/server.js",
+              }, 
+
+11 . typescript eslint prettier setup
+     follw this link -> https://blog.logrocket.com/linting-typescript-eslint-prettier/
+
+12 . use ts-node-dev ->
+           - npm install ts-node-dev --save-dev
+           - ts-node-dev --respawn --transpile-only app/server.ts 
