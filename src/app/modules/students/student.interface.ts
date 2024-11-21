@@ -13,7 +13,7 @@ export type Guardian =
  export type UserName = {
     firstName: string;
     middleName:string;
-    LastName : string;
+    lastName : string;
 }
 
 export type LocalGuardian = {
