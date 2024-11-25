@@ -26,3 +26,8 @@
 12 . use ts-node-dev ->
            - npm install ts-node-dev --save-dev
            - ts-node-dev --respawn --transpile-only app/server.ts 
+
+13 . password not send to database must be hash converting thsn send 
+ Bcrypt : 
+           - npm i bcrypt          
+           - npm i @types/bcrypt

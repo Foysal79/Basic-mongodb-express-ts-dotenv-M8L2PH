@@ -1,18 +1,24 @@
 import { Request, Response } from "express";
 import { StudentServices } from "./student.service";
+import { z } from "zod";
+import studentValidationSchema from "./student.zod.validation";
 
 const createStudent = async(req:Request, res : Response) => {
       try{
+        
         const student = req.body.student;
-       const result = await StudentServices.createStudentIntoDB(student);
+        //* Creating A Schema Validation using ZOD
+        const zodParseData = studentValidationSchema.parse(student);
+
+       const result = await StudentServices.createStudentIntoDB(zodParseData);
      res.status(200).json({
         message : "Student is create successfully",
         success : true,
         data : result
      })
-      }catch(error){
+      }catch(error : any){
       res.status(500).json({
-        message : "something went Wrong ",
+        message : error.message || "something went Wrong ",
         success : false,
         error : error,
       })
@@ -50,8 +56,33 @@ const  getSingleStudent = async(req : Request, res : Response) => {
 }
 
 
+//* deleted student
+
+const deleteStudent = async(req : Request , res : Response) => {
+ 
+  try{
+        const {studentId} = req.params;
+        const result = await StudentServices.deleteStudentFromDB(studentId);
+        res.status(200).json({
+          success : true,
+          message : "Student is deleted successfully",
+          data : result,
+        })
+  }
+  catch(error){
+    res.status(500).json({
+      success : false,
+      message : "Error deleting student",
+      data : error
+    })
+  }
+
+} 
+
+
 export const studentController = {
     createStudent,
     getAllStudents,
-    getSingleStudent
+    getSingleStudent,
+    deleteStudent
 }

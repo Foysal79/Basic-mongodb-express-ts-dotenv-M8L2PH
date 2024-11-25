@@ -1,4 +1,4 @@
-import { Schema, model, connect } from 'mongoose';
+import { Schema, connect, Model } from 'mongoose';
 // 1. Create an interface representing a document in MongoDB.
 
 export type Guardian = 
@@ -24,10 +24,11 @@ export type LocalGuardian = {
 
  export type StudentInterface =  {
     id : string;
+    password : string;
     name : UserName,
     email: string;
     avatar?: string;
-    gender: "male" | "female";
+    gender: "male" | "female" | "other";
     dateOfBirth?: string;
     contactNo : string;
     emergencyContactNo : string;
@@ -37,5 +38,22 @@ export type LocalGuardian = {
     guardian: Guardian ;
     localGuardian : LocalGuardian; 
     profileImg?: string;
-    isActive : 'active' | 'inActive';
+    isActive : 'active' | 'blocked';
+    isDeleted : boolean
+  }
+
+ //* creating a  custom instance method
+  // export type studentMethods = {
+  //   isUserExits(id : string) : Promise<StudentInterface | null>
+  // }
+
+  // export type studentModel1 = Model<StudentInterface, {}, studentMethods>;
+
+
+
+
+
+  //* create a custom static methods
+ export interface studentModel1 extends Model<StudentInterface>{
+    isUserExists(id : string ) : Promise<StudentInterface | null>
   }

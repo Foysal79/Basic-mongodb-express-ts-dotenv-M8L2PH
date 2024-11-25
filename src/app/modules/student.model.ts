@@ -1,6 +1,8 @@
 import { Schema, model } from 'mongoose';
-import { Guardian, LocalGuardian, StudentInterface, UserName } from './students/student.interface';
+import { Guardian, LocalGuardian, StudentInterface, studentModel1, UserName } from './students/student.interface';
 import validator from 'validator';
+import bcrypt from 'bcrypt'
+import config from '../config';
 
 const userNameSchema = new Schema<UserName>({
     firstName: { 
@@ -67,11 +69,15 @@ const localGuardianSchema = new Schema<LocalGuardian>({
 });
 
 // Main Student Schema
-const studentSchema = new Schema<StudentInterface>({
+const studentSchema = new Schema<StudentInterface, studentModel1>({
     id: { 
         type: String, 
         required: [true, "Student ID is required."], 
         unique: true 
+    },
+    password: { 
+        type: String, 
+        required: [true, "Student password is required."],
     },
     name: { 
         type: userNameSchema, 
@@ -142,6 +148,76 @@ const studentSchema = new Schema<StudentInterface>({
         }, 
         default: 'active' 
     },
+    isDeleted : {
+        type : Boolean,
+        default : false,
+    }
+}, {
+    toJSON : {
+        virtuals : true,
+    }
 });
 
-export const StudentModel = model<StudentInterface>('Student', studentSchema);
+//* mongoDB virtual 
+
+studentSchema.virtual('fullName').get(function(){
+    return (
+        `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`
+    ) 
+})
+
+//* pre save middleware / hook
+studentSchema.pre('save', async function(next){
+    const student = this;
+   student.password = await  bcrypt.hash(student.password, Number(config.bcrypt_salt_rounds));
+   next();
+})
+
+//* post save middleware / hook
+studentSchema.post('save', function(doc, next){
+
+    doc.password = '',
+    next();
+})
+
+
+//* Query Middleware 
+// find in data with out deleted data 
+studentSchema.pre('find', function(next){
+   this.find({
+    isDeleted : {$ne : true}
+   })
+   next();
+})
+// find single data with out deleted data ( static method )
+studentSchema.pre('find', function(next){
+    this.findOne({
+        isDeleted : {$ne : true}
+    })
+    next();
+})
+
+// find single data with out deleted data middleware
+studentSchema.pre('aggregate', function(next){
+    this.pipeline().unshift({$match : {isDeleted : {$ne : true}}})
+    next();
+})
+
+//* creating a make custom instance method
+// studentSchema.methods.isUserExits = async function(id : string) {
+//     const existingUser = await StudentModel.findOne({id});
+//     return existingUser;
+// }
+// export const StudentModel = model<StudentInterface, studentModel1>('Student', studentSchema);
+
+
+
+//* creating a make custom static method
+studentSchema.statics.isUserExists = async function(id : string) {
+    const existingUser = await StudentModel.findOne({ id })
+
+    return existingUser;
+}
+
+
+export const StudentModel = model<StudentInterface, studentModel1>('Student', studentSchema);
