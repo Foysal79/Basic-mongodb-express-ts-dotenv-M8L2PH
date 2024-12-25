@@ -5,5 +5,5 @@ export type TUser = {
     needPasswordChange : boolean;
     role : 'admin' | 'student' | 'faculty';
     isDeleted : boolean;
-    status : 'is-Progress';
+    status : 'is-Progress' | 'blocked';
 }
