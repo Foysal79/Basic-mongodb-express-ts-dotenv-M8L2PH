@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model, ObjectId } from 'mongoose';
 import {
   Guardian,
   LocalGuardian,
@@ -83,6 +83,11 @@ const studentSchema = new Schema<StudentInterface, studentModel1>(
       required: [true, 'Student ID is required.'],
       unique: true,
     },
+    user : {
+      type: Schema.Types.ObjectId, ref : 'User',
+      required: [true, 'user ID is required.'],
+     
+    },
     password: {
       type: String,
       required: [true, 'Student password is required.'],
@@ -159,14 +164,10 @@ const studentSchema = new Schema<StudentInterface, studentModel1>(
       },
       default: 'active',
     },
-    isDeleted: {
-      type: Boolean,
-      default: false,
-    },
   },
   {
     toJSON: {
-      virtuals: true,
+      virtuals : true,
     },
   },
 );
