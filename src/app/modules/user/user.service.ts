@@ -6,17 +6,18 @@ import { NewUser, TUser } from "./user.interface";
 import { User } from "./user.model";
 
 //* create student
-const createStudentIntoDB = async (password : string, studentData: StudentInterface) => {
-
+const createStudentIntoDB = async (password : string, studentData : StudentInterface) => {
+      
     // create a user object
     const userData : Partial<TUser> = {}
+      // set manually generated id
+      userData.id = 'A2030100001';
     // if password is not given, use default password
     userData.password = password || config.default_password ;
     // set student role 
     userData.role = 'student';
 
-    // set manually generated id
-    userData.id = '2030100001'
+  
 
     // create a user
     const newUser = await User.create(userData);
@@ -31,6 +32,8 @@ const createStudentIntoDB = async (password : string, studentData: StudentInterf
         const newStudent = await StudentModel.create(studentData);
         return newStudent ;
     }
+
+    return newUser;
 
 };
 

@@ -90,7 +90,7 @@ const studentSchema = new Schema<StudentInterface, studentModel1>(
     },
     password: {
       type: String,
-      required: [true, 'Student password is required.'],
+      required: [false, 'Student password is not be medotaoty.'],
     },
     name: {
       type: userNameSchema,
@@ -119,6 +119,7 @@ const studentSchema = new Schema<StudentInterface, studentModel1>(
     },
     dateOfBirth: {
       type: String,
+      required : false
     },
     contactNo: {
       type: String,
@@ -135,6 +136,7 @@ const studentSchema = new Schema<StudentInterface, studentModel1>(
         message:
           '{VALUE} is not a valid blood group. Please provide a valid blood group.',
       },
+      required : false
     },
     presentAddress: {
       type: String,
@@ -154,16 +156,8 @@ const studentSchema = new Schema<StudentInterface, studentModel1>(
     },
     profileImg: {
       type: String,
-    },
-    isActive: {
-      type: String,
-      enum: {
-        values: ['active', 'blocked'],
-        message:
-          "{VALUE} is not a valid status. Please use 'active' or 'blocked'.",
-      },
-      default: 'active',
-    },
+      required: false
+    }
   },
   {
     toJSON: {
@@ -174,46 +168,46 @@ const studentSchema = new Schema<StudentInterface, studentModel1>(
 
 //* mongoDB virtual
 
-studentSchema.virtual('fullName').get(function () {
-  return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`;
-});
+// studentSchema.virtual('fullName').get(function () {
+//   return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`;
+// });
 
 //* pre save middleware / hook
-studentSchema.pre('save', async function (next) {
-  const student = this;
-  student.password = await bcrypt.hash(
-    student.password,
-    Number(config.bcrypt_salt_rounds),
-  );
-  next();
-});
+// studentSchema.pre('save', async function (next) {
+//   const student = this;
+//   student.password = await bcrypt.hash(
+//     student.password,
+//     Number(config.bcrypt_salt_rounds),
+//   );
+//   next();
+// });
 
 //* post save middleware / hook
-studentSchema.post('save', function (doc, next) {
-  (doc.password = ''), next();
-});
+// studentSchema.post('save', function (doc, next) {
+//   (doc.password = ''), next();
+// });
 
 //* Query Middleware
 // find in data with out deleted data
-studentSchema.pre('find', function (next) {
-  this.find({
-    isDeleted: { $ne: true },
-  });
-  next();
-});
+// studentSchema.pre('find', function (next) {
+//   this.find({
+//     isDeleted: { $ne: true },
+//   });
+//   next();
+// });
 // find single data with out deleted data ( static method )
-studentSchema.pre('find', function (next) {
-  this.findOne({
-    isDeleted: { $ne: true },
-  });
-  next();
-});
+// studentSchema.pre('find', function (next) {
+//   this.findOne({
+//     isDeleted: { $ne: true },
+//   });
+//   next();
+// });
 
 // find single data with out deleted data middleware
-studentSchema.pre('aggregate', function (next) {
-  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
-  next();
-});
+// studentSchema.pre('aggregate', function (next) {
+//   this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
+//   next();
+// });
 
 //* creating a make custom instance method
 // studentSchema.methods.isUserExits = async function(id : string) {
@@ -223,13 +217,11 @@ studentSchema.pre('aggregate', function (next) {
 // export const StudentModel = model<StudentInterface, studentModel1>('Student', studentSchema);
 
 //* creating a make custom static method
-studentSchema.statics.isUserExists = async function (id: string) {
-  const existingUser = await StudentModel.findOne({ id });
+// studentSchema.statics.isUserExists = async function (id: string) {
+//   const existingUser = await StudentModel.findOne({ id });
 
-  return existingUser;
-};
+//   return existingUser;
+// };
 
 export const StudentModel = model<StudentInterface, studentModel1>(
-  'Student',
-  studentSchema,
-);
+  'Student', studentSchema);
