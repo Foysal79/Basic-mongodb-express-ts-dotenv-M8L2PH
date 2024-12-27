@@ -1,4 +1,4 @@
-import { Schema, model, ObjectId } from 'mongoose';
+import { Schema, model } from 'mongoose';
 import {
   Guardian,
   LocalGuardian,
@@ -7,8 +7,6 @@ import {
   UserName,
 } from './student.interface';
 import validator from 'validator';
-import bcrypt from 'bcrypt';
-import config from '../../config';
 
 const userNameSchema = new Schema<UserName>({
   firstName: {
@@ -87,10 +85,6 @@ const studentSchema = new Schema<StudentInterface, studentModel1>(
       type: Schema.Types.ObjectId, ref : 'User',
       required: [true, 'user ID is required.'],
      
-    },
-    password: {
-      type: String,
-      required: [false, 'Student password is not be medotaoty.'],
     },
     name: {
       type: userNameSchema,

@@ -25,7 +25,7 @@ export type LocalGuardian = {
  export type StudentInterface =  {
     id : string;
     user : Types.ObjectId;
-    password : string;
+    
     name : UserName,
     email: string;
     avatar?: string;

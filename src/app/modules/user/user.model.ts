@@ -1,5 +1,7 @@
 import { model, Schema } from "mongoose";
 import { TUser } from "./user.interface";
+import config from "../../config";
+import bcrypt from 'bcrypt';
 
 const userSchema = new Schema<TUser>({
     id : {type : String, required : true},
@@ -15,6 +17,20 @@ const userSchema = new Schema<TUser>({
     timestamps : true,
 }
 )
-//* const User = model<IUser, UserModel>('User', schema);
+
+//* pre save middleware / hook ( password encryption )
+userSchema.pre('save', async function (next) {
+  const user = this;
+  user.password = await bcrypt.hash(
+    user.password,
+    Number(config.bcrypt_salt_rounds),
+  );
+  next();
+});
+
+//* post save middleware / hook ( password hide )
+userSchema.post('save', function (doc, next) {
+  (doc.password = ''), next();
+});
 
 export const User = model<TUser>('user', userSchema)
