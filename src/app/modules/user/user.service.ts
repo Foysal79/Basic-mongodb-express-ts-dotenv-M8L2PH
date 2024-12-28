@@ -11,7 +11,7 @@ const createStudentIntoDB = async (password : string, studentData : StudentInter
     // create a user object
     const userData : Partial<TUser> = {}
       // set manually generated id
-      userData.id = 'A2030100001';
+      userData.id = 'A20301000011';
     // if password is not given, use default password
     userData.password = password || config.default_password ;
     // set student role 
