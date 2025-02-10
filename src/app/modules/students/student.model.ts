@@ -82,7 +82,8 @@ const studentSchema = new Schema<StudentInterface, studentModel1>(
       unique: true,
     },
     user : {
-      type: Schema.Types.ObjectId, ref : 'User',
+      type: Schema.Types.ObjectId,
+       ref : 'User',
       required: [true, 'user ID is required.'],
      
     },

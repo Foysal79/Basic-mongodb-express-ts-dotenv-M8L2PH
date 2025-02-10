@@ -1,16 +1,24 @@
-import { NextFunction, Request, Response } from "express";
+// import { NextFunction, Request, Response } from "express";
+// import httpStatus from 'http-status'
+
+
+
+//  const notFound = ( req: Request, res: Response, next: NextFunction) => {
+//       return res.status(httpStatus.NOT_FOUND).json({
+//         success : false,
+//         message : 'Api is not found',
+//         error : ' ',     
+//       })   
+//   }
+//   export default notFound
+import { NextFunction, Request, Response } from "express"
 import httpStatus from 'http-status'
+const notFound = ( req : Request, res: Response, next : NextFunction) => {
 
- const notFound = ( req: Request, res: Response, next: NextFunction) => {
- 
-      return res.status(httpStatus.NOT_FOUND).json({
-        success : false,
-        message : 'Api is not found',
-        error : ' ',
-        
-      })
-      
-  }
-
-
-  export default notFound
+  return res.status(httpStatus.NOT_FOUND).json({
+    success : false,
+    message : 'Api is not found',
+    error : ' ',
+  })
+}
+export default notFound;
