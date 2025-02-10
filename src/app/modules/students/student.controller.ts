@@ -1,26 +1,24 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Request, RequestHandler, Response } from "express";
 import { StudentServices } from "./student.service";
-import { z } from "zod";
+import { promise, z } from "zod";
 import studentValidationSchema from "./student.zod.validation";
-
-
-const getAllStudents = async(req:Request, res:Response, next : NextFunction) => {
-    try {
-     const result = await StudentServices.getAllStudentFromDB();
-     res.status(200).json({
-        message : "Student is fetched successfully",
-        success : true,
-        data : result
-     })
-    } catch(error)
-    {
-      next(error);
-    }
-
+// higher order function catch Async for handel clean code ( try catch function mantine)  
+const catchAsync = (fn : RequestHandler) => {
+   return (req : Request, res:Response, next: NextFunction ) => {
+    Promise.resolve(fn(req, res, next)).catch((err) => next(err));
+   }
 }
-
-const  getSingleStudent = async(req : Request, res : Response, next : NextFunction) => {
-  try {
+// get all student
+const getAllStudents = catchAsync(async(req:Request, res:Response, next : NextFunction) => {
+   const result = await StudentServices.getAllStudentFromDB();
+   res.status(200).json({
+      message : "Student is fetched successfully",
+      success : true,
+      data : result
+   })
+});
+// get single student
+const  getSingleStudent = catchAsync( async(req : Request, res : Response, next : NextFunction) => {
     const {studentId} = req.params
     const result = await StudentServices.getSingleStudentFromDB(studentId)
     res.status(200).json({
@@ -28,18 +26,11 @@ const  getSingleStudent = async(req : Request, res : Response, next : NextFuncti
         success : true,
         data : result
     })
-
-  }catch(error) {
-    next(error);
-  }
-}
+})
 
 
-//* deleted student
-
-const deleteStudent = async(req : Request , res : Response, next : NextFunction) => {
- 
-  try{
+//* deleted single student
+const deleteStudent = catchAsync( async(req : Request , res : Response, next : NextFunction) => {
         const {studentId} = req.params;
         const result = await StudentServices.deleteStudentFromDB(studentId);
         res.status(200).json({
@@ -47,12 +38,7 @@ const deleteStudent = async(req : Request , res : Response, next : NextFunction)
           message : "Student is deleted successfully",
           data : result,
         })
-  }
-  catch(error){
-    next(error);
-  }
-
-} 
+} )
 
 
 export const studentController = {
