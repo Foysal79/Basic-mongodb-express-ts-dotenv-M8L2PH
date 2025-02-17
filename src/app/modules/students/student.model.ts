@@ -113,7 +113,7 @@ const studentSchema = new Schema<StudentInterface, studentModel1>(
       required: [true, 'Gender is required.'],
     },
     dateOfBirth: {
-      type: String,
+      type: Date,
       required : false
     },
     contactNo: {
@@ -148,6 +148,10 @@ const studentSchema = new Schema<StudentInterface, studentModel1>(
     localGuardian: {
       type: localGuardianSchema,
       required: [true, 'Local guardian information is required.'],
+    },
+    admissionSemester : {
+     type : Schema.Types.ObjectId,
+     ref : "AcademicSemester"
     },
     profileImg: {
       type: String,

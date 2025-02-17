@@ -50,53 +50,54 @@ const userNameSchema = z.object({
   });
   
   // Main Student Schema Validation
-  const studentValidationSchema = z.object({
-    id: z.string().nonempty("Student ID is required."),
-    password: z.string().nonempty("Student ID is required.").max(20),
-    name: userNameSchema,
-    email: z
-      .string()
-      .email("Please provide a valid email address.")
-      .nonempty("Email is required."),
-    avatar: z.string().optional(),
-    gender: z
-      .enum(["male", "female", "other"], {
-        errorMap: () => ({
-          message: "Gender must be 'male', 'female', or 'other'.",
-        }),
-      }),
-      
-    dateOfBirth: z.string().optional(),
-    contactNo: z
-      .string()
-      .nonempty("Contact number is required."),
-    emergencyContactNo: z
-      .string()
-      .nonempty("Emergency contact number is required."),
-    bloodGroup: z
-      .enum(["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"], {
-        errorMap: () => ({
-          message: "Please provide a valid blood group.",
-        }),
-      })
-      .optional(),
-    presentAddress: z
-      .string()
-      .nonempty("Present address is required."),
-    permanentAddress: z
-      .string()
-      .nonempty("Permanent address is required."),
-    guardian: guardianSchema,
-    localGuardian: localGuardianSchema,
-    profileImg: z.string().optional(),
-    isActive: z.enum(["active", "blocked"], {
-        errorMap: () => ({
-          message: "Status must be either 'active' or 'blocked'.",
-        }),
-      }).default("active"),
-      
-  });
+  const createStudentValidationSchema = z.object({
+    body : z.object({
+      password: z.string().nonempty("Student ID is required.").max(20),
+        student : z.object({
+          name: userNameSchema,
+          email: z
+            .string()
+            .email("Please provide a valid email address.")
+            .nonempty("Email is required."),
+          avatar: z.string().optional(),
+          gender: z
+            .enum(["male", "female", "other"], {
+              errorMap: () => ({
+                message: "Gender must be 'male', 'female', or 'other'.",
+              }),
+            }),
+            
+          dateOfBirth: z.date().optional(),
+          contactNo: z
+            .string()
+            .nonempty("Contact number is required."),
+          emergencyContactNo: z
+            .string()
+            .nonempty("Emergency contact number is required."),
+          bloodGroup: z
+            .enum(["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"], {
+              errorMap: () => ({
+                message: "Please provide a valid blood group.",
+              }),
+            })
+            .optional(),
+          presentAddress: z
+            .string()
+            .nonempty("Present address is required."),
+          permanentAddress: z
+            .string()
+            .nonempty("Permanent address is required."),
+          guardian: guardianSchema,
+          localGuardian: localGuardianSchema,
+          admissionSemester : z.string() ,
+          profileImg: z.string().optional(),
+        })
+        
+    })
+  
+  })
 
 
-
-  export default studentValidationSchema;
+  export const  studentValidations = {
+    createStudentValidationSchema
+  }

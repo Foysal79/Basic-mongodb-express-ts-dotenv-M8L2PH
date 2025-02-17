@@ -41,6 +41,7 @@
 
 
 import config from "../../config";
+import { TAcademicSemester } from "../academicSemester/academicSemester.interface";
 import { StudentInterface } from "../students/student.interface";
 import { StudentModel } from "../students/student.model";
 import { TUser } from "./user.interface";
@@ -49,7 +50,13 @@ import { User } from "./user.model";
 const createStudentIntoDB = async (password : string ,studentData : StudentInterface) => {
 
     const userData : Partial<TUser> = {}
-    userData.id = 'A20301000011',
+    // year - semesterCode - 4 digit number
+    const generatedID = (payload : TAcademicSemester) => {
+    
+    }
+
+
+    userData.id = generatedID()
     userData.password = password || config.default_password,
     userData.role = 'student'
     //  create a user 
