@@ -43,8 +43,24 @@ const getAllAcademicSemesters = catchAsync(
     }
 )
 
+const getSingleAcademicSemester = catchAsync(
+    async (req : Request, res : Response, next : NextFunction) => {
+        const {semesterId} = req.params;
+        const result = await AcademicSemesterServices.getSingleAcademicSemesterFrom(semesterId);
+
+        sendResponse(res, {
+            statusCode: httpStatus.OK,
+            success: true,
+            message: "Academic Semester Get Single Successfully",
+            data: result
+        })
+    }
+)
+
+
 
 export const AcademicSemesterControllers = {
     createAcademicSemester,
     getAllAcademicSemesters,
+    getSingleAcademicSemester
 }

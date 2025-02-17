@@ -10,7 +10,7 @@ const router = express.Router()
 router.post('/create-academic-semester', 
     validateRequest(academicSemesterValidation.createAcademicSemesterValidationSchema),  AcademicSemesterControllers.createAcademicSemester)
 // single id base get
-router.get('/:semesterId')
+router.get('/:semesterId', AcademicSemesterControllers.getSingleAcademicSemester)
 // update
 router.patch('/:semesterId' )
 // all academic semester get
