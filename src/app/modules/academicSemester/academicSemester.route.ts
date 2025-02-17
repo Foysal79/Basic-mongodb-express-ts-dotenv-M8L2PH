@@ -12,7 +12,7 @@ router.post('/create-academic-semester',
 // single id base get
 router.get('/:semesterId', AcademicSemesterControllers.getSingleAcademicSemester)
 // update
-router.patch('/:semesterId' )
+router.patch('/:semesterId', AcademicSemesterControllers.updateAcademicSemester )
 // all academic semester get
 router.get('/', AcademicSemesterControllers.getAllAcademicSemesters );
 
