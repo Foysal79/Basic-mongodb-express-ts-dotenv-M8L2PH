@@ -29,7 +29,7 @@ export type LocalGuardian = {
     email: string;
     avatar?: string;
     gender: "male" | "female" | "other";
-    dateOfBirth?: Date;
+    dateOfBirth : string;
     contactNo : string;
     emergencyContactNo : string;
     bloodGroup?: "A+" | "A-" | "B+" | "B-" | "O+" | "O-" | "AB+" | "AB-";

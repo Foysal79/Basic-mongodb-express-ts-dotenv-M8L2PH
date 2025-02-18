@@ -113,8 +113,8 @@ const studentSchema = new Schema<StudentInterface, studentModel1>(
       required: [true, 'Gender is required.'],
     },
     dateOfBirth: {
-      type: Date,
-      required : false
+      type: String,
+      
     },
     contactNo: {
       type: String,

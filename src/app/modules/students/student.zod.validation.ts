@@ -67,7 +67,7 @@ const userNameSchema = z.object({
               }),
             }),
             
-          dateOfBirth: z.date().optional(),
+          dateOfBirth: z.string(),
           contactNo: z
             .string()
             .nonempty("Contact number is required."),
