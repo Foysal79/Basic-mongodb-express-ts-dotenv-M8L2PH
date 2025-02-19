@@ -1,18 +1,21 @@
 import { NextFunction, Request, Response } from "express";
 import catchAsync from "../../utils/catchAsync";
-import { academicDepartmentService, createAcademicDepartmentService } from "./academicDepartment.service";
+import { academicDepartmentService } from "./academicDepartment.service";
 import sendResponse from "../../utils/sendResponse";
-
+import httpStatus from 'http-status'; 
 
 const createAcademicDepartment = catchAsync(
     async (req : Request, res : Response, next : NextFunction) => {
+        
        const result = await academicDepartmentService.createAcademicDepartmentInoDB(req.body);
+       
+
        sendResponse(res, {
-        statusCode: httpStatus.CREATED,
+        statusCode: httpStatus.OK,
         success : true,
-        message: "Academic Department created successfully",
+        message: "Academic department  created successfully",
         data: result
-       })
+      })
     }
 )
 
