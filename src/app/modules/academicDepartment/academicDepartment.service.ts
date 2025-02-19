@@ -3,22 +3,22 @@ import { AcademicDepartment } from "./academicDepartment.model";
 
 
 
-const createAcademicDepartment = async(payload : TAcademicDepartment) => {
+const createAcademicDepartmentInoDB = async(payload : TAcademicDepartment) => {
     const result = await AcademicDepartment.create(payload);
     return result
 }
 
-const getAllAcademicDepartment = async() => {
+const getAllAcademicDepartmentFromDB = async() => {
     const result = await AcademicDepartment.find();
     return result;
 }
 
-const getSingleAcademicDepartment = async(id : string) => {
+const getSingleAcademicDepartmentFromDB = async(id : string) => {
     const result = await AcademicDepartment.findById(id);
     return result;
 }
 
-const UpdateAcademicDepartment = async(id : string, payload : Partial<TAcademicDepartment>) => {
+const UpdateAcademicDepartmentFromDB = async(id : string, payload : Partial<TAcademicDepartment>) => {
     const result = await AcademicDepartment.findByIdAndUpdate(
         {_id : id}, 
         payload, 
@@ -26,9 +26,9 @@ const UpdateAcademicDepartment = async(id : string, payload : Partial<TAcademicD
         return result;
 }
 
-export const createAcademicDepartmentService = {
-    createAcademicDepartment,
-    getAllAcademicDepartment,
-    getSingleAcademicDepartment,
-    UpdateAcademicDepartment
+export const academicDepartmentService = {
+    createAcademicDepartmentInoDB,
+    getAllAcademicDepartmentFromDB,
+    getSingleAcademicDepartmentFromDB,
+    UpdateAcademicDepartmentFromDB
 }
