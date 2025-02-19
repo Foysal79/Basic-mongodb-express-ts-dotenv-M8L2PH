@@ -32,7 +32,7 @@ const getAllAcademicFaculty = catchAsync(
 const getSingleAcademicFaculty = catchAsync(
     async (req : Request, res: Response, next: NextFunction) => {
         const {facultyId} = req.params;
-        console.log(facultyId)
+        
         const result = await createAcademicFacultyService.getSingleAcademicFacultiesFromDB(facultyId);
         const data = await result;
         sendResponse(res, {

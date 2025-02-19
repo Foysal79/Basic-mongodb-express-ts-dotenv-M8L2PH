@@ -9,6 +9,8 @@ const academicFacultySchema = new Schema<TAcademicFaculty>(
             required : true
         }
         
+    }, {
+        timestamps : true
     }
 )
 
