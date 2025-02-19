@@ -45,7 +45,7 @@ const getSingleAcademicFaculty = catchAsync(
 const updateAcademicFaculty = catchAsync(
     async (req : Request, res: Response, next: NextFunction) => {
         const {facultyId} = req.params;
-        const result = await createAcademicFacultyService.updateAcademicFacultyIntoDB(facultyId, req.params);
+        const result = await createAcademicFacultyService.updateAcademicFacultyIntoDB(facultyId, req.body);
         sendResponse(res, {
             statusCode: httpStatus.OK,
             success : true,
