@@ -7,15 +7,16 @@ import httpStatus from 'http-status';
 const createAcademicDepartment = catchAsync(
     async (req : Request, res : Response, next : NextFunction) => {
         
-       const result = await academicDepartmentService.createAcademicDepartmentInoDB(req.body);
+     
+        const result = await academicDepartmentService.createAcademicDepartmentInoDB(req.body);
        
-
-       sendResponse(res, {
-        statusCode: httpStatus.OK,
-        success : true,
-        message: "Academic department  created successfully",
-        data: result
-      })
+        sendResponse(res, {
+         statusCode: httpStatus.OK,
+         success : true,
+         message: "Academic department  created successfully",
+         data: result
+       })
+      
     }
 )
 
