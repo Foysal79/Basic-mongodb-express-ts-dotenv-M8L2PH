@@ -156,6 +156,10 @@ const studentSchema = new Schema<StudentInterface, studentModel1>(
     profileImg: {
       type: String,
       required: false
+    },
+    academicDepartment : {
+      type : Schema.Types.ObjectId,
+      ref : "AcademicDepartment"
     }
   },
   {
