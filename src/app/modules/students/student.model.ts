@@ -81,11 +81,10 @@ const studentSchema = new Schema<StudentInterface, studentModel1>(
       required: [true, 'Student ID is required.'],
       unique: true,
     },
-    user : {
+    user: {
       type: Schema.Types.ObjectId,
-       ref : 'User',
+      ref: 'User',
       required: [true, 'user ID is required.'],
-     
     },
     name: {
       type: userNameSchema,
@@ -114,7 +113,6 @@ const studentSchema = new Schema<StudentInterface, studentModel1>(
     },
     dateOfBirth: {
       type: String,
-      
     },
     contactNo: {
       type: String,
@@ -131,7 +129,7 @@ const studentSchema = new Schema<StudentInterface, studentModel1>(
         message:
           '{VALUE} is not a valid blood group. Please provide a valid blood group.',
       },
-      required : false
+      required: false,
     },
     presentAddress: {
       type: String,
@@ -149,22 +147,26 @@ const studentSchema = new Schema<StudentInterface, studentModel1>(
       type: localGuardianSchema,
       required: [true, 'Local guardian information is required.'],
     },
-    admissionSemester : {
-     type : Schema.Types.ObjectId,
-     ref : "AcademicSemester"
+    admissionSemester: {
+      type: Schema.Types.ObjectId,
+      ref: 'AcademicSemester',
     },
     profileImg: {
       type: String,
-      required: false
+      required: false,
     },
-    academicDepartment : {
-      type : Schema.Types.ObjectId,
-      ref : "AcademicDepartment"
-    }
+    academicDepartment: {
+      type: Schema.Types.ObjectId,
+      ref: 'AcademicDepartment',
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     toJSON: {
-      virtuals : true,
+      virtuals: true,
     },
   },
 );
@@ -227,4 +229,6 @@ const studentSchema = new Schema<StudentInterface, studentModel1>(
 // };
 
 export const StudentModel = model<StudentInterface, studentModel1>(
-  'Student', studentSchema);
+  'Student',
+  studentSchema,
+);
