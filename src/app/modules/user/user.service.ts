@@ -47,7 +47,7 @@ import { TUser } from './user.interface';
 import { User } from './user.model';
 import { generatedStudentID } from './user.utils';
 import AppError from '../../errors/AppError';
-import httpStatus from 'http-status'
+import httpStatus from 'http-status';
 
 const createStudentIntoDB = async (
   password: string,
@@ -73,25 +73,29 @@ const createStudentIntoDB = async (
     const newUser = await User.create([userData], { session });
     // create a student
     if (!newUser.length) {
-        throw new AppError(httpStatus.BAD_REQUEST, "User to not be create this moment")
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        'User to not be create this moment',
+      );
     }
-     // set id, _id as user
-      payload.id = newUser[0].id, // Embedded id
-      payload.user = newUser[0]._id // refereeing id
-    const newStudent = await StudentModel.create([payload], { session } );
-     if(!newStudent)
-     {
-        throw new AppError(httpStatus.BAD_REQUEST, "Not to create student this moment")
-     }
-    
+    // set id, _id as user
+    (payload.id = newUser[0].id), // Embedded id
+      (payload.user = newUser[0]._id); // refereeing id
+    const newStudent = await StudentModel.create([payload], { session });
+    if (!newStudent) {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        'Not to create student this moment',
+      );
+    }
 
-     await session.commitTransaction();
-     await session.endSession();
+    await session.commitTransaction();
+    await session.endSession();
 
     return newStudent;
-
   } catch (err) {
     await session.abortTransaction();
+    throw new Error('Failed to create Student');
   }
 };
 

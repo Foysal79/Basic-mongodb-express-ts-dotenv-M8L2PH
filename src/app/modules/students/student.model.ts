@@ -173,9 +173,9 @@ const studentSchema = new Schema<StudentInterface, studentModel1>(
 
 //* mongoDB virtual
 
-// studentSchema.virtual('fullName').get(function () {
-//   return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`;
-// });
+studentSchema.virtual('fullName').get(function () {
+  return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`;
+});
 
 //* pre save middleware / hook
 // studentSchema.pre('save', async function (next) {
@@ -194,31 +194,32 @@ const studentSchema = new Schema<StudentInterface, studentModel1>(
 
 //* Query Middleware
 // find in data with out deleted data
-// studentSchema.pre('find', function (next) {
-//   this.find({
-//     isDeleted: { $ne: true },
-//   });
-//   next();
-// });
+studentSchema.pre('find', function (next) {
+  this.find({
+    isDeleted: { $ne: true },
+  });
+  next();
+});
+
 // find single data with out deleted data ( static method )
-// studentSchema.pre('find', function (next) {
-//   this.findOne({
-//     isDeleted: { $ne: true },
-//   });
-//   next();
-// });
+studentSchema.pre('findOne', function (next) {
+  this.findOne({
+    isDeleted: { $ne: true },
+  });
+  next();
+});
 
 // find single data with out deleted data middleware
-// studentSchema.pre('aggregate', function (next) {
-//   this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
-//   next();
-// });
+studentSchema.pre('aggregate', function (next) {
+  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
+  next();
+});
 
 //* creating a make custom instance method
-// studentSchema.methods.isUserExits = async function(id : string) {
-//     const existingUser = await StudentModel.findOne({id});
-//     return existingUser;
-// }
+studentSchema.methods.isUserExits = async function (id: string) {
+  const existingUser = await StudentModel.findOne({ id });
+  return existingUser;
+};
 // export const StudentModel = model<StudentInterface, studentModel1>('Student', studentSchema);
 
 //* creating a make custom static method
