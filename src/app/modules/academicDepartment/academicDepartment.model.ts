@@ -7,6 +7,7 @@ const academicDepartmentSchema = new Schema<TAcademicDepartment>(
     name: {
       type: String,
       required: true,
+      unique : true
     },
     academicFaculty: {
       type: Schema.Types.ObjectId,
@@ -33,7 +34,7 @@ academicDepartmentSchema.pre('save', async function (next) {
     name: this.name,
   });
   if (isDepartmentExist) {
-    throw new AppError(404, 'Department already exist');
+    throw new AppError(404, 'This Department already exist');
   }
   next();
 });
