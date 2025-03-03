@@ -93,9 +93,9 @@ const createStudentIntoDB = async (
     await session.endSession();
 
     return newStudent;
-  } catch (err) {
+  } catch (err : any) {
     await session.abortTransaction();
-    throw new Error('Failed to create Student');
+    throw new Error(err);
   }
 };
 

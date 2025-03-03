@@ -1,12 +1,10 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express';
 import { StudentServices } from './student.service';
-import { promise, z } from 'zod';
-import studentValidationSchema from './student.zod.validation';
 import catchAsync from '../../utils/catchAsync';
 
 // get all student
 const getAllStudents = catchAsync(async (req: Request, res: Response) => {
-  const result = await StudentServices.getAllStudentFromDB();
+  const result = await StudentServices.getAllStudentFromDB(req.query);
   res.status(200).json({
     message: 'Student is fetched successfully',
     success: true,
@@ -39,7 +37,7 @@ const deleteStudent = catchAsync(async (req: Request, res: Response) => {
 const updateStudent = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const { studentId } = req.params;
-    const {student} = req.body;
+    const { student } = req.body;
     const result = await StudentServices.updateStudentFromDB(
       studentId,
       student,
