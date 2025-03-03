@@ -29,15 +29,15 @@ academicDepartmentSchema.pre('findOneAndUpdate', async function (next) {
 });
 
 // pre is same { type name department existing } throw a new error
-academicDepartmentSchema.pre('save', async function (next) {
-  const isDepartmentExist = await AcademicDepartment.findOne({
-    name: this.name,
-  });
-  if (isDepartmentExist) {
-    throw new AppError(404, 'This Department already exist');
-  }
-  next();
-});
+// academicDepartmentSchema.pre('save', async function (next) {
+//   const isDepartmentExist = await AcademicDepartment.findOne({
+//     name: this.name,
+//   });
+//   if (isDepartmentExist) {
+//     throw new AppError(404, 'This Department already exist');
+//   }
+//   next();
+// });
 
 export const AcademicDepartment = model<TAcademicDepartment>(
   'AcademicDepartment',

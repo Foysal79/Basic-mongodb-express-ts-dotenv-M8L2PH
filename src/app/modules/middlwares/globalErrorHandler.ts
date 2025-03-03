@@ -13,6 +13,10 @@
 import { NextFunction, Request, Response } from 'express';
 import { ZodError, ZodIssue } from 'zod';
 import config from '../../config';
+import handleZodError from '../../errors/handleZodError';
+import handleValidationError from '../../errors/handleValidationError';
+import handelCastError from '../../errors/handelCastError';
+import handleDuplicateError from '../../errors/handleDuplicateError';
 
 const globalErrorHandler = (
   err: any,
@@ -35,34 +39,34 @@ const globalErrorHandler = (
     },
   ];
 
-  const handleZodError = (err: ZodError) => {
-    errorSources = err.issues.map((issue: ZodIssue) => {
-      return {
-        path: issue?.path[issue.path.length - 1],
-        message: issue.message,
-      };
-    });
-
-    const statusCode = 400;
-    return {
-      statusCode,
-      message: 'Validation Error',
-      errorSources,
-    };
-  };
-
   if (err instanceof ZodError) {
     const simplifiedError = handleZodError(err);
     (statusCode = simplifiedError.statusCode),
       (message = simplifiedError.message),
       (errorSources = simplifiedError.errorSources);
+  } else if (err?.name === 'ValidationError') {
+    const simplifiedError = handleValidationError(err);
+    statusCode = simplifiedError?.statusCode;
+    message = simplifiedError?.message;
+    errorSources = simplifiedError?.errorSources;
+  } else if (err?.name === 'CastError') {
+    const simplifiedError = handelCastError(err);
+    statusCode = simplifiedError?.statusCode;
+    message = simplifiedError?.message;
+    errorSources = simplifiedError?.errorSources;
+  } else if (err?.code === 11000) {
+    const simplifiedError = handleDuplicateError(err);
+    statusCode = simplifiedError?.statusCode;
+    message = simplifiedError?.message;
+    errorSources = simplifiedError?.errorSources;
   }
 
   return res.status(statusCode).json({
     success: false,
     message,
+    // err,
     errorSources,
-    stack : config.NODE_ENV === 'DEVELOPMENT' ? err?.stack : null ,
+    stack: config.NODE_ENV === 'DEVELOPMENT' ? err?.stack : null,
   });
 };
 
