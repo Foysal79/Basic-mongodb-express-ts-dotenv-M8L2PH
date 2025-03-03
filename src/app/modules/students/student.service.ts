@@ -6,25 +6,33 @@ import { User } from '../user/user.model';
 
 //* all student find
 const getAllStudentFromDB = async (query: Record<string, unknown>) => {
-  
   //*Search tram Impletion
   // { email : {$regex : query.searchTerm , $options : i}},
   // {presentAddress : {$regex : query.searchTerm, $options : i}},
   // {name.firstName : {$regex : query.searchTerm, $options : i}},
-
+  const studentSearchableFields = [
+    'email',
+    'name.firstName',
+    'presentAddress',
+    'name.lastName',
+  ];
   let searchTerm = '';
   if (query?.searchTerm) {
     searchTerm = query?.searchTerm as string;
   }
+  const searchQuery = StudentModel.find({
+    $or: studentSearchableFields.map((field) => ({
+      [field]: { $regex: searchTerm, $options: 'i' },
+    })),
+  });
 
-  const result = await StudentModel.find({
-    $or: ['email', 'name.firstName', 'presentAddress', 'name.lastName'].map(
-      (field) => ({
-        [field]: { $regex: searchTerm, $options: 'i' },
-      }),
-    ),
-  })
+  //* filtering
+  const queryObject = { ...query };
+  const excludeFields = ['searchTerm'];
+  excludeFields.forEach((el) => delete queryObject[el]);
 
+  const result = await searchQuery
+    .find(queryObject)
     .populate({
       path: 'academicDepartment',
       populate: {
