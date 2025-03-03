@@ -17,6 +17,7 @@ import handleZodError from '../../errors/handleZodError';
 import handleValidationError from '../../errors/handleValidationError';
 import handelCastError from '../../errors/handelCastError';
 import handleDuplicateError from '../../errors/handleDuplicateError';
+import AppError from '../../errors/AppError';
 
 const globalErrorHandler = (
   err: any,
@@ -24,8 +25,8 @@ const globalErrorHandler = (
   res: Response,
   next: NextFunction,
 ) => {
-  let statusCode = err.statusCode || 500;
-  let message = err.message || 'Something went wrong';
+  let statusCode = 500;
+  let message = 'Something went wrong';
 
   type TErrorSource = {
     path: string | number;
@@ -59,6 +60,23 @@ const globalErrorHandler = (
     statusCode = simplifiedError?.statusCode;
     message = simplifiedError?.message;
     errorSources = simplifiedError?.errorSources;
+  } else if (err instanceof AppError) {
+    statusCode = err?.statusCode;
+    message = err?.message;
+    errorSources = [
+      {
+        path: '',
+        message: err?.message,
+      },
+    ];
+  } else if (err instanceof Error) {
+    message = err?.message;
+    errorSources = [
+      {
+        path: '',
+        message: err?.message,
+      },
+    ];
   }
 
   return res.status(statusCode).json({
