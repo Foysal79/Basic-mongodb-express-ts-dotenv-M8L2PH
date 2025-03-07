@@ -1,4 +1,4 @@
-import { Types } from 'mongoose';
+import { Model, Types } from 'mongoose';
 
 export type TGender = 'male' | 'female' | 'others';
 
@@ -17,14 +17,14 @@ export type TBloodGroup =
   | 'AB-'
   | 'O+'
   | 'O-';
-  
+
 export type TAdmin = {
   id: string;
   user: Types.ObjectId;
   designation: string;
   name: TUserName;
   gender: TGender;
-  dateOfBirth?: Date;
+  dateOfBirth?: string;
   email: string;
   contactNo: string;
   emergencyContactNo: string;
@@ -34,3 +34,7 @@ export type TAdmin = {
   profileImg?: string;
   isDeleted: boolean;
 };
+
+export interface AdminModel extends Model<TAdmin> {
+  isUserExists(id: string): Promise<TAdmin | null>;
+}
