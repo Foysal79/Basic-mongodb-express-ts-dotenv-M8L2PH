@@ -1,5 +1,6 @@
 import { model, Schema } from "mongoose";
 import { AdminModel, TAdmin, TUserName } from "./admin.interface";
+import { BloodGroup, Gender } from "./admin.constant";
 
 const userNameSchema = new Schema<TUserName>({
   firstName: {
@@ -53,7 +54,7 @@ const adminSchema = new Schema<TAdmin , AdminModel>(
         gender : {
            type : String,
            enum : {
-            values : ['male', 'female', 'others'],
+            values : Gender,
             message : '{VALUE} is not a valid gender. Please provide a valid gender.',
            } 
         },
@@ -75,7 +76,7 @@ const adminSchema = new Schema<TAdmin , AdminModel>(
         bloodGroup : {
             type :  String,
             enum : {
-                values : ["A+", "A-", "B+", "B-", "AB+", "AB-", ]
+                values : BloodGroup
             }
         },
         presentAddress : {
@@ -99,6 +100,34 @@ const adminSchema = new Schema<TAdmin , AdminModel>(
         }
     }
 )
+// generate full name 
+adminSchema.virtual('fullName').get(function(){
+    return (
+        this?.name?.firstName + " " + 
+        this?.name?.middleName + " " +
+        this?.name?.lastName
+    )
+})
 
+// filtering out delate document
 
+adminSchema.pre('find', function(next){
+    this.find({isDeleted : {$ne : true}});
+    next();
+})
+adminSchema.pre('findOne', function(next){
+    this.find({isDeleted : {$ne : true}});
+    next();
+})
+
+adminSchema.pre("aggregate", function(next){
+    this.pipeline().unshift({$match : {isDeleted : {$ne : true}}});
+    next();
+})
+
+// checking if user is Existing
+adminSchema.statics.isUserExists = async function(id:string){
+    const existingUser = await Admin.findOne({id});
+    return existingUser;
+}
 export const Admin = model<TAdmin, AdminModel>('Admin', adminSchema);
