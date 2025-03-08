@@ -43,3 +43,14 @@ export const generatedStudentID = async (payload: TAcademicSemester) => {
 
   return incrementId;
 };
+
+
+export const generatedFaculty = async() => {
+
+}
+
+
+
+export const generatedAdmin = async() => {
+
+}

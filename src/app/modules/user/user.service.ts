@@ -1,41 +1,3 @@
-// import { ObjectId } from "mongoose";
-// import config from "../../config";
-// import { StudentInterface } from "../students/student.interface";
-// import { StudentModel } from "../students/student.model";
-// import { NewUser, TUser } from "./user.interface";
-// import { User } from "./user.model";
-
-// //* create student
-// const createStudentIntoDB = async (password : string, studentData : StudentInterface) => {
-//     // create a user object
-//     const userData : Partial<TUser> = {}
-//       // set manually generated id
-//       userData.id = 'A20301000011';
-//     // if password is not given, use default password
-//     userData.password = password || config.default_password ;
-//     // set student role
-//     userData.role = 'student';
-
-//     // create a user
-//     const newUser = await User.create(userData);
-
-//     // create a student
-//     if(Object.keys(newUser).length){
-//         // set id , _id
-//         studentData.id = newUser.id ; // Embedded id
-//         studentData.user = newUser._id; // referencing id
-
-//         const newStudent = await StudentModel.create(studentData);
-//         return newStudent ;
-//     }
-
-//     return newUser;
-
-// };
-
-// export const userService = {
-//     createStudentIntoDB
-// }
 
 import mongoose from 'mongoose';
 import config from '../../config';
@@ -45,9 +7,13 @@ import { StudentInterface } from '../students/student.interface';
 import { StudentModel } from '../students/student.model';
 import { TUser } from './user.interface';
 import { User } from './user.model';
-import { generatedStudentID } from './user.utils';
+import { generatedFaculty, generatedStudentID } from './user.utils';
 import AppError from '../../errors/AppError';
 import httpStatus from 'http-status';
+import { TFaculty } from '../Faculty/faculty.interface';
+import { TAdmin } from '../admin/admin.interface';
+import { AcademicDepartment } from '../academicDepartment/academicDepartment.model';
+import { Faculty } from '../Faculty/faculty.model';
 
 const createStudentIntoDB = async (
   password: string,
@@ -99,6 +65,57 @@ const createStudentIntoDB = async (
   }
 };
 
+const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
+  // create a user object
+  const userData : Partial<TUser> = {};
+
+  // if password is not given , use default password
+  userData.password = password || (config.default_password as string );
+  // set role as faculty
+  userData.role = 'faculty';
+
+  const academicDepartment = await AcademicDepartment.findById(payload.academicDepartment);
+  if(!academicDepartment){
+    throw new AppError(httpStatus.BAD_REQUEST, 'Academic Department not found');
+  }
+  // create a user ( Transactions  )
+  const session = await mongoose.startSession(); 
+  try{
+   session.startTransaction();
+  //  generate id 
+  userData.id = await generatedFaculty();
+
+  // create user (transactions - 1 )
+  const newUser = await User.create([userData], {session}); 
+
+  // create a faculty
+  if(!newUser){
+    throw new AppError(httpStatus.BAD_REQUEST, 'Not to create user this moment');
+  }
+
+  // set id , _id as user
+  payload.id = newUser[0].id;  
+  payload.user = newUser[0]._id; // reference
+
+  // create a faculty (transactions - 2 )
+  const newFaculty = await Faculty.create([payload], {session})
+   if(!newFaculty){
+    throw new AppError(httpStatus.BAD_REQUEST, 'Not to create faculty this moment');
+   }
+
+   // commit transaction
+    await session.commitTransaction();
+    await session.endSession();
+  } catch (error : any){
+      await session.abortTransaction();
+      await session.endSession();
+      throw new Error(error);
+  }
+};
+const createAdminIntoDB = async (password: string, payload: TAdmin) => {};
+
 export const userService = {
   createStudentIntoDB,
+  createFacultyIntoDB,
+  createAdminIntoDB,
 };
