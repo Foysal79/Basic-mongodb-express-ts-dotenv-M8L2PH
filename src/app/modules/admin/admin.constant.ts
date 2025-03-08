@@ -12,3 +12,12 @@ export const BloodGroup: TBloodGroup[] = [
 ];
 
 export const Gender: TGender[] = ['male', 'female', 'others'];
+export const AdminSearchableFields = [
+  'email',
+  'id',
+  'contactNo',
+  'emergencyContactNo',
+  'name.firstName',
+  'name.lastName',
+  'name.middleName',
+];

@@ -1,6 +1,6 @@
 import { TAcademicSemester } from '../academicSemester/academicSemester.interface';
 import { User } from './user.model';
-
+//* Student Id Generator
 const findLastStudentId = async () => {
   const lastStudentId = await User.findOne(
     {
@@ -17,7 +17,6 @@ const findLastStudentId = async () => {
     .lean();
   return lastStudentId?.id ? lastStudentId.id : undefined;
 };
-
 // year - semesterCode - 4 digit number
 export const generatedStudentID = async (payload: TAcademicSemester) => {
   // first time 0000 padStar
@@ -44,13 +43,62 @@ export const generatedStudentID = async (payload: TAcademicSemester) => {
   return incrementId;
 };
 
+//*Faculty Generator
+const findLastFacultyID = async () => {
+  const lastFacultyId = await User.findOne(
+    {
+      role: 'faculty',
+    },
+    {
+      id: 1, // projection -> Id : 1 means id only given
+      _id: 0, // projection -> Id : 1 means id not given
+    },
+  )
+    .sort({
+      createdAt: -1,
+    })
+    .lean();
 
-export const generatedFaculty = async() => {
+  return lastFacultyId?.id ? lastFacultyId.id : undefined;
+};
 
-}
+export const generatedFaculty = async () => {
+  let currentId = (0).toString();
+  const lastFacultyId = await findLastFacultyID();
 
+  if (lastFacultyId) {
+    currentId = lastFacultyId.substring(2);
+  }
+  let incrementId = (Number(currentId) + 1).toString().padStart(4, '0');
+  incrementId = `F-${incrementId}`;
+  return incrementId;
+};
+//*admin ID Generator
+const lastAdminId = async () => {
+  const lastAdminIdByBD = await User.findOne(
+    {
+      role: 'admin',
+    },
+    {
+      id: 1, // projection -> Id : 1 means id only given
+      _id: 0, // projection -> _Id : 0 means id not given
+    },
+  )
+    .sort({
+      createdAt: -1,
+    })
+    .lean();
 
+  return lastAdminIdByBD?.id ? lastAdminIdByBD.id : undefined;
+};
 
-export const generatedAdmin = async() => {
-
-}
+export const generateAdminId = async () => {
+  let currentId = (0).toString();
+  const lastCurrentId = await lastAdminId();
+  if (lastCurrentId) {
+    currentId = lastCurrentId.substring(2);
+  }
+  let incrementId = (Number(currentId) + 1).toString().padStart(4, '0');
+  incrementId = `A-${incrementId}`;
+  return incrementId;
+};
