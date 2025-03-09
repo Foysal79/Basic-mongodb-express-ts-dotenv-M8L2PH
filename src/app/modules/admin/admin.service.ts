@@ -19,7 +19,7 @@ const getAllAdminFromDB = async (query: Record<string, unknown>) => {
 };
 
 const getSingleAdminFromDB = async (id: string) => {
-  const result = await Admin.findById(id);
+  const result = await Admin.findOne({ id });
   return result;
 };
 
@@ -34,7 +34,8 @@ const updateAdminIntoDB = async (id: string, payload: Partial<TAdmin>) => {
       modifiedUpdateData[`name${key}`] = value;
     }
   }
-  const result = await Admin.findByIdAndUpdate({ id }, modifiedUpdateData, {
+  const result = await Admin.findByIdAndUpdate({ id }, 
+    modifiedUpdateData, {
     new: true,
     runValidators: true,
   });
