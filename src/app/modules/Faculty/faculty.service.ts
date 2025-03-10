@@ -27,18 +27,26 @@ const getSingleFacultyFromDB = async (id: string) => {
   return result;
 };
 
-const updateFacultyIntoDB = async (id: string, payload: Partial<TFaculty>) => {
+const updateFacultyIntoDB = async (_id: string, payload: Partial<TFaculty>) => {
   const { name, ...remainingFacultyData } = payload;
   const modifiedUpdateData: Record<string, unknown> = {
     ...remainingFacultyData,
   };
-  if (name && Object.keys(name).length) {
-    for (const [key, value] of Object.entries(name)) {
-      modifiedUpdateData[`name${key}`] = value;
+  // Loop through the keys in the payload
+  for (const [key, value] of Object.entries(payload)) {
+    if (key === 'name' && value && typeof value === 'object') {
+      // Handle name object (which is nested)
+      for (const [nameKey, nameValue] of Object.entries(
+        value as Record<string, unknown>,
+      )) {
+        modifiedUpdateData[`name.${nameKey}`] = nameValue;
+      }
+    } else {
+      // For other fields, directly add them
+      modifiedUpdateData[key] = value;
     }
   }
-
-  const result = await Faculty.findByIdAndUpdate({ id }, modifiedUpdateData, {
+  const result = await Faculty.findByIdAndUpdate({ _id }, modifiedUpdateData, {
     new: true,
     runValidators: true,
   });
