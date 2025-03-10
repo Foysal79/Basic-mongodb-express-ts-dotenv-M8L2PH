@@ -5,6 +5,7 @@ import { TAdmin } from './admin.interface';
 import { Admin } from './admin.model';
 import AppError from '../../errors/AppError';
 import { User } from '../user/user.model';
+import httpStatus from 'http-status';
 
 const getAllAdminFromDB = async (query: Record<string, unknown>) => {
   const adminQuery = new QueryBuilder(Admin.find(), query)
@@ -34,8 +35,7 @@ const updateAdminIntoDB = async (id: string, payload: Partial<TAdmin>) => {
       modifiedUpdateData[`name${key}`] = value;
     }
   }
-  const result = await Admin.findByIdAndUpdate({ id }, 
-    modifiedUpdateData, {
+  const result = await Admin.findOneAndUpdate({ id }, modifiedUpdateData, {
     new: true,
     runValidators: true,
   });
@@ -47,8 +47,8 @@ const deletedAdminFromDB = async (id: string) => {
   const session = await mongoose.startSession();
   try {
     session.startTransaction();
-    const deletedAdmin = await Admin.findByIdAndUpdate(
-      id,
+    const deletedAdmin = await Admin.findOneAndUpdate(
+      { id },
       {
         isDeleted: true,
       },
@@ -63,8 +63,8 @@ const deletedAdminFromDB = async (id: string) => {
     }
     // transaction 2
     const userId = deletedAdmin.user;
-    const deletedUser = await User.findByIdAndUpdate(
-      userId,
+    const deletedUser = await User.findOneAndUpdate(
+      { id: userId },
       { isDeleted: true },
       { new: true, session },
     );
