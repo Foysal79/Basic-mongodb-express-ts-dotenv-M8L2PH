@@ -99,7 +99,7 @@ const getAllStudentFromDB = async (query: Record<string, unknown>) => {
 const getSingleStudentFromDB = async (id: string) => {
   // const result = await StudentModel.aggregate([{ $match: { id: id } }])
   //const result = await StudentModel.findById(id)
-  const result = await StudentModel.findOne({ id })
+  const result = await StudentModel.findById({ id })
     .populate({
       path: 'academicDepartment',
       populate: {
