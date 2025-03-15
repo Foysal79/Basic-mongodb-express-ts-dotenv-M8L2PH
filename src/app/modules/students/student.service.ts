@@ -78,14 +78,17 @@ const getAllStudentFromDB = async (query: Record<string, unknown>) => {
 
   // return fieldQuery;
 
-  const studentQuery = new QueryBuilder(StudentModel.find()
-    .populate({
-      path: 'academicDepartment',
-      populate: {
-        path: 'academicFaculty',
-      },
-    })
-    .populate('admissionSemester'), query)
+  const studentQuery = new QueryBuilder(
+    StudentModel.find()
+      .populate({
+        path: 'academicDepartment',
+        populate: {
+          path: 'academicFaculty',
+        },
+      })
+      .populate('admissionSemester'),
+    query,
+  )
     .search(studentSearchableFields)
     .filter()
     .sort()
@@ -136,14 +139,10 @@ const updateStudentFromDB = async (
     }
   }
 
-  const result = await StudentModel.findOneAndUpdate(
-    { id },
-    modifiedUpdatedData,
-    {
-      new: true,
-      runValidators: true,
-    },
-  );
+  const result = await StudentModel.findByIdAndUpdate(id, modifiedUpdatedData, {
+    new: true,
+    runValidators: true,
+  });
   return result;
 };
 
@@ -152,8 +151,8 @@ const deleteStudentFromDB = async (id: string) => {
 
   try {
     session.startTransaction();
-    const deletedStudent = await StudentModel.findOneAndUpdate(
-      { id },
+    const deletedStudent = await StudentModel.findByIdAndUpdate(
+      id,
       { isDeleted: true },
       { new: true, session },
     );
@@ -161,8 +160,12 @@ const deleteStudentFromDB = async (id: string) => {
       throw new AppError(400, 'Fail to deled student');
     }
 
-    const deletedUser = await User.findOneAndUpdate(
-      { id },
+    const userId = deletedStudent.user;
+
+    const deletedUser = await User.findByIdAndUpdate(
+      {
+        id: userId,
+      },
       { isDeleted: true },
       { new: true, session },
     );
