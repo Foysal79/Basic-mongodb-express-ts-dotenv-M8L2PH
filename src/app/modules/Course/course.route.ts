@@ -10,7 +10,11 @@ router.post(
   validateRequest(CourseValidations.createCourseValidationSchema),
   CourseController.createCourse,
 );
-
+router.patch(
+  '/:id',
+  validateRequest(CourseValidations.updateCourseValidationSchema),
+  CourseController.updateCourse,
+);
 router.get('/', CourseController.getAllCourses);
 router.get('/:id', CourseController.getSingleCourse);
 router.delete('/:id', CourseController.deletedCourse);
